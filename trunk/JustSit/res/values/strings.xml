@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, JustSit</string>
+    <string name="app_name">Just Sit</string>
+<string name="duration_label">Meditation Duration (min)</string>
+<string name="preparation_label">Preparation Time (s)</string>
+<string name="sit">Sit!</string>
+<string name="prep_label">Prepare to Sit</string>
+<string name="meditate_label">Sit!</string>
+<string name="default_prep_time">30</string>
+<string name="default_meditation_time">30</string>
+</resources>
