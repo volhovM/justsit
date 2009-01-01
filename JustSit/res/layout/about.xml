@@ -16,20 +16,33 @@
     along with JustSit.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:gravity="center"
-    >
-    <TextView android:id="@+id/timer_label"
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-    	android:textSize="50sp"
-    	android:gravity="center"
-    	/>
-    <TextView android:id="@+id/timer_view"
+	android:layout_width="fill_parent" 
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:gravity="center"
+	>
+	<TextView android:id="@+id/about_title" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:text="@string/app_name"
+		android:textSize="50sp"
+		/>
+	<TextView android:id="@+id/about_version"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:textSize="100sp"
-	/>
+		android:textSize="20sp"
+		android:text="@string/dummy_version"
+		/>
+	<TextView android:id="@+id/about_author"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/author"
+		android:textSize="30sp"
+		/>
+    <TextView android:id="@+id/about_gpl"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:text="@string/gpl_notice"
+    	android:drawablePadding="5px"
+    	/>
 </LinearLayout>
