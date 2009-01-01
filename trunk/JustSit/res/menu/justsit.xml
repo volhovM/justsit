@@ -1,3 +1,10 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"><item android:titleCondensed="Settings" android:title="Settings" android:id="@+id/settings"></item>
-<item android:titleCondensed="About" android:title="About" android:id="@+id/about"></item>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<item android:titleCondensed="Settings" 
+	android:title="Settings" 
+	android:id="@+id/settings" 
+	android:icon="@drawable/settings_icon"/>
+<item android:titleCondensed="About" 
+	android:title="About" 
+	android:id="@+id/about"
+	android:icon="@drawable/about_icon"/>
 </menu>
