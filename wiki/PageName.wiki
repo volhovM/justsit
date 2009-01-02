@@ -1,0 +1,9 @@
+#summary User Manual
+#labels Featured
+
+JustSit is designed to be fairly self-explanatory. It offers a prep timer to let you get settled in your favored meditation position, and a meditation timer. It sounds one bell at the beginning of the meditation period, and three bells at the end.
+
+Three options are offered in the settings screen:
+  * *Keep screen on:* Will allow the screen to dim but not turn off while the timer is running. This will be disabled once the timer finishes, or if you back out of the timer with the back key.
+  * *Airplane mode:* Puts the phone in airplane mode while the timer is running. Note that airplane mode can take a few seconds to apply, so please be patient with it. Reverts the phone to the previous radio state when the timer is done. Therefore, if airplane mode is already on when you start the timer, it should stay on when the timer finishes.
+  * *Silent Mode (w/ Vibrate):* Sets the phone to vibrate instead of ring while the timer is running. It's kind of pointless if you have airplane mode on, but if you don't want that "nuclear option" you can use this one instead.
