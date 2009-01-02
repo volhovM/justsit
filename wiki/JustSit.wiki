@@ -1,0 +1,1 @@
+The preferred name of this application is JustSit (in camel case as you see here). Google Code only allows lowercase project names, though, so if the naming seems inconsistent, now you know why.
