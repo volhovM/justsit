@@ -18,9 +18,6 @@
 package com.brocktice.JustSit;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.widget.TextView;

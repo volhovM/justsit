@@ -283,7 +283,6 @@ public class JustSit extends Activity {
 	    }else{
 	    	// Revert to original setting
 	    	Settings.System.putInt(this.getContentResolver(), Settings.System.AIRPLANE_MODE_ON, settings.getInt(ORIG_AIRPLANE_MODE, FALSE));
-	    	int orig_mode = settings.getInt(ORIG_AIRPLANE_MODE, FALSE);
 	    	if(settings.getInt(ORIG_AIRPLANE_MODE, FALSE) == FALSE){
 	    		Toast airplaneToast = Toast.makeText(this, R.string.airplane_mode_off, Toast.LENGTH_LONG);
 	    		airplaneToast.show();
