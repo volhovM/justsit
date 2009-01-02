@@ -1,4 +1,5 @@
 #summary User Manual
+#labels Featured
 
 JustSit is designed to be fairly self-explanatory. It offers a prep timer to let you get settled in your favored meditation position, and a meditation timer. It sounds one bell at the beginning of the meditation period, and three bells at the end.
 
