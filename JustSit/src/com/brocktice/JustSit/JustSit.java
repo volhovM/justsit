@@ -50,6 +50,7 @@ public class JustSit extends Activity {
 	public static final String ORIG_AIRPLANE_MODE = "originalAirplaneMode";
 	public static final String SILENT_MODE = "silentMode";
 	public static final String ORIG_RINGER_MODE= "originalRingerMode";
+	public static final String ORIG_MEDIA_VOLUME = "originalMediaVolume";
 	public static final String PREFS_VERSION = "prefsVersion";
 	public static final int CURRENT_PREFS_VERSION=2;
 	public static final int TRUE=1;
@@ -261,6 +262,7 @@ public class JustSit extends Activity {
         			mVibrator.vibrate(1000);
         		}else{
         			mMediaPlayer = MediaPlayer.create(this, R.raw.prep);
+        			mMediaPlayer.setVolume(1, 1);
         			mMediaPlayer.start();
         		}
         		Intent i = new Intent(JustSit.this, RunTimer.class);
@@ -275,6 +277,7 @@ public class JustSit extends Activity {
         		}else{
         			mMediaPlayer = null;
         			mMediaPlayer = MediaPlayer.create(this,R.raw.meditate);
+        			mMediaPlayer.setVolume(1, 1);
         			mMediaPlayer.start();
         		}
         		break;
@@ -349,6 +352,19 @@ public class JustSit extends Activity {
 
 	}
 	
+	protected void setMediaVolume(boolean on){
+		SharedPreferences settings = getSharedPreferences(JustSit.PREFS_NAME, 0);
+	    SharedPreferences.Editor editor = settings.edit();
+	    if(on){
+	    	// Save the existing setting for when we revert
+	    	editor.putInt(ORIG_MEDIA_VOLUME, mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+	    	editor.commit();
+	    	mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+	    }else{
+	    	mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, settings.getInt(ORIG_MEDIA_VOLUME, mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC)), 0);
+	    }
+		
+	}
 	protected void meditationSettings(boolean on){
 	    if(mAirplaneMode){
 	    	setAirplaneMode(on);
@@ -361,5 +377,7 @@ public class JustSit extends Activity {
 	    if(mSilentMode){
 	    	setSilentMode(on);
 	    }
+	    
+	    setMediaVolume(on);
 	}
 }
