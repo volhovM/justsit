@@ -25,7 +25,8 @@ import android.widget.TextView;
 public class RunTimer extends Activity {
 	private TextView mTimerView;
 	private TextView mTimerLabel;
-
+	private long mMillisLeft;
+	private Bundle extras;
 	
 	public static final String PREFS_NAME = "JustSitPreferences";
 
@@ -38,26 +39,38 @@ public class RunTimer extends Activity {
 		mTimerView = (TextView) findViewById(R.id.timer_view);
 		mTimerLabel = (TextView) findViewById(R.id.timer_label);
 		
-		Bundle extras = getIntent().getExtras();
+		extras = (Bundle) getLastNonConfigurationInstance();
+		if (extras == null) {
+			extras = getIntent().getExtras();
+		}
 		if (extras != null) {
 			int timer_label = extras.getInt(JustSit.TIMER_LABEL);
-			int timer_duration = extras.getInt(JustSit.TIMER_DURATION);
+			long timer_duration = extras.getLong(JustSit.TIMER_DURATION);
 			mTimerLabel.setText(timer_label);
 			runCountdown(timer_duration);
+
 		}
 	}
 
-	protected void runCountdown(int start_time){
+	@Override
+	public Object onRetainNonConfigurationInstance() {
+		extras.putLong(JustSit.TIMER_DURATION, mMillisLeft);
+	    return extras;
+	}
+
+	
+	protected void runCountdown(long start_time){
 		new CountDownTimer(start_time, 1000) {
 
             @Override
 			public void onTick(long millisUntilFinished) {
-                                  mTimerView.setText(Long.toString(millisUntilFinished / 1000));  
+                                  mTimerView.setText(Long.toString(millisUntilFinished / 1000));
+                                  mMillisLeft = millisUntilFinished;
             }
 
             @Override
 			public void onFinish() {
-            	setResult(RESULT_OK);
+            	setResult(JustSit.TIMER_COMPLETE);
             	finish();
             }
          }.start();
@@ -69,3 +82,5 @@ public class RunTimer extends Activity {
 	
 	
 }
+
+

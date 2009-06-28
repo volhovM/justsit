@@ -25,6 +25,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
@@ -49,12 +50,13 @@ public class JustSit extends Activity {
 	public static final String ORIG_AIRPLANE_MODE = "originalAirplaneMode";
 	public static final String SILENT_MODE = "silentMode";
 	public static final String ORIG_RINGER_MODE= "originalRingerMode";
-	
+	public static final String PREFS_VERSION = "prefsVersion";
+	public static final int CURRENT_PREFS_VERSION=2;
 	public static final int TRUE=1;
 	public static final int FALSE=0;
     private static final int ACTIVITY_PREP=0;
     private static final int ACTIVITY_MEDITATE=1;
-    
+    public static final int TIMER_COMPLETE = RESULT_FIRST_USER;
     private static final String TAG = "JustSit";
 
     private EditText mPrepText;
@@ -69,6 +71,7 @@ public class JustSit extends Activity {
 	private Boolean mSilentMode;
 	private PowerManager.WakeLock mWakeLock;
 	private AudioManager mAudioManager;
+	private Vibrator mVibrator;
 	
     /** Called when the activity is first created. */
     @Override
@@ -81,8 +84,16 @@ public class JustSit extends Activity {
         mMeditateText = (EditText) findViewById(R.id.meditation_text);
         
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        setPrepTime(settings.getInt(PREP_SECONDS, 30));
-        setMeditateTime(settings.getInt(MEDITATION_MINUTES, 30));
+        SharedPreferences.Editor editor = settings.edit();
+        
+        if(settings.getInt(PREFS_VERSION, 0) < CURRENT_PREFS_VERSION){
+        	editor.clear();
+        	editor.putInt(PREFS_VERSION, CURRENT_PREFS_VERSION);
+        	editor.commit();
+        }
+       	setPrepTime(settings.getLong(PREP_SECONDS, 30));
+       	setMeditateTime(settings.getLong(MEDITATION_MINUTES, 30));
+
         mAirplaneMode = settings.getBoolean(AIRPLANE_MODE, false);
         mScreenOn = settings.getBoolean(SCREEN_ON, false);
         mSilentMode = settings.getBoolean(SILENT_MODE, false);
@@ -93,6 +104,7 @@ public class JustSit extends Activity {
         mMeditateDown = (ImageView) findViewById(R.id.meditate_down_button);
         mMediaPlayer = new MediaPlayer();
         mAudioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+        mVibrator = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
         
         Button sitButton = (Button) findViewById(R.id.sit);
         sitButton.setOnClickListener(launchRunTimer);
@@ -154,64 +166,64 @@ public class JustSit extends Activity {
     	startActivity(i);
     }
     
-    private int getPrepTime(){
-    	int prepTime;
+    private long getPrepTime(){
+    	long prepTime;
     	try{
-    		prepTime = Integer.parseInt(mPrepText.getText().toString());
+    		prepTime = Long.parseLong(mPrepText.getText().toString());
     	}catch(NumberFormatException e){
     		Toast badFormatToast = Toast.makeText(this, R.string.invalid_prep_time, Toast.LENGTH_LONG);
     		badFormatToast.show();
-    		prepTime = Integer.parseInt(getString(R.string.default_prep_time));
+    		prepTime = Long.parseLong(getString(R.string.default_prep_time));
     		mPrepText.setText(getString(R.string.default_prep_time));
     		Log.w(TAG, e.getMessage() + " Using default prep time");
     	}
     	return prepTime;
     }
     
-    private int getMeditateTime(){
-    	int meditateTime;
+    private long getMeditateTime(){
+    	long meditateTime;
     	try{
-    		meditateTime = Integer.parseInt(mMeditateText.getText().toString());
+    		meditateTime = Long.parseLong(mMeditateText.getText().toString());
     	}catch(NumberFormatException e){
     		Toast badFormatToast = Toast.makeText(this, R.string.invalid_meditation_time, Toast.LENGTH_LONG);
     		badFormatToast.show();
-    		meditateTime = Integer.parseInt(getString(R.string.default_meditation_time));
+    		meditateTime = Long.parseLong(getString(R.string.default_meditation_time));
     		mMeditateText.setText(getString(R.string.default_meditation_time));
     		Log.w(TAG, e.getMessage() + " Using default meditation time");
     	}
     	return meditateTime;
     }
     
-    private void setPrepTime(int time){
-    	mPrepText.setText(Integer.toString(time));	
+    private void setPrepTime(long time){
+    	mPrepText.setText(Long.toString(time));	
     }
     
-    private void setMeditateTime(int time){
-    	mMeditateText.setText(Integer.toString(time));
+    private void setMeditateTime(long time){
+    	mMeditateText.setText(Long.toString(time));
     }
     
-    private void modifyPrepTime(int time){
+    private void modifyPrepTime(long time){
     	setPrepTime(getPrepTime() + time);
     }
     
-    private void modifyMeditateTime(int time){
+    private void modifyMeditateTime(long time){
     	setMeditateTime(getMeditateTime() + time);
     }
     
     private void incrementPrepTime(){
-    	modifyPrepTime(1);
+    	modifyPrepTime((long)1);
     }
     
     private void decrementPrepTime(){
-    	modifyPrepTime(-1);
+    	modifyPrepTime((long)-1);
     }
     
     private void incrementMeditateTime(){
-    	modifyMeditateTime(1);
+    	modifyMeditateTime((long)1);
     }
     
     private void decrementMeditateTime(){
-    	modifyMeditateTime(-1);
+    	modifyMeditateTime((long)-1);
     }
     
     private OnClickListener launchRunTimer = new OnClickListener(){
@@ -219,7 +231,7 @@ public class JustSit extends Activity {
     		meditationSettings(true);
     		Intent i = new Intent(JustSit.this, RunTimer.class);
     		i.putExtra(TIMER_LABEL, R.string.prep_label);
-    		i.putExtra(TIMER_DURATION, getPrepTime()*1000);
+    		i.putExtra(TIMER_DURATION, getPrepTime()*(long)1000);
     		startActivityForResult(i, ACTIVITY_PREP);
     	}
     };
@@ -230,8 +242,8 @@ public class JustSit extends Activity {
 		mMediaPlayer = null;
 		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
 	    SharedPreferences.Editor editor = settings.edit();
-	    editor.putInt(PREP_SECONDS, getPrepTime());
-	    editor.putInt(MEDITATION_MINUTES, getMeditateTime());
+	    editor.putLong(PREP_SECONDS, getPrepTime());
+	    editor.putLong(MEDITATION_MINUTES, getMeditateTime());
 	    editor.commit();
 
 	}
@@ -239,23 +251,36 @@ public class JustSit extends Activity {
 	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        if(resultCode == RESULT_OK){
+        if(resultCode == TIMER_COMPLETE){
+        	SharedPreferences settings = getSharedPreferences(JustSit.PREFS_NAME, 0);
+    	    boolean silent = settings.getBoolean(JustSit.SILENT_MODE, false);
+
         	switch(requestCode) {
         	case ACTIVITY_PREP:
-        		mMediaPlayer = MediaPlayer.create(this, R.raw.prep);
-        		mMediaPlayer.start();
+        		if(silent){
+        			mVibrator.vibrate(1000);
+        		}else{
+        			mMediaPlayer = MediaPlayer.create(this, R.raw.prep);
+        			mMediaPlayer.start();
+        		}
         		Intent i = new Intent(JustSit.this, RunTimer.class);
         		i.putExtra(TIMER_LABEL, R.string.meditate_label);
-        		i.putExtra(TIMER_DURATION, getMeditateTime()*60000);
+        		i.putExtra(TIMER_DURATION, getMeditateTime()*(long)60000);
         		startActivityForResult(i, ACTIVITY_MEDITATE);
         		break;
         	case ACTIVITY_MEDITATE:
         		meditationSettings(false);
-        		mMediaPlayer = null;
-        		mMediaPlayer = MediaPlayer.create(this,R.raw.meditate);
-        		mMediaPlayer.start();
+        		if(silent){
+        			mVibrator.vibrate(1000);
+        		}else{
+        			mMediaPlayer = null;
+        			mMediaPlayer = MediaPlayer.create(this,R.raw.meditate);
+        			mMediaPlayer.start();
+        		}
         		break;
         	}        
+        }else if (resultCode == RESULT_OK){
+        		// Do nothing
         }else{
         	if(mMediaPlayer != null){
         		mMediaPlayer.stop();
@@ -316,7 +341,9 @@ public class JustSit extends Activity {
 		if(on){
 		 mWakeLock.acquire();
 		}else{
-		 mWakeLock.release();
+			if(mWakeLock.isHeld()){
+				mWakeLock.release();
+			}
 		 mWakeLock = null;
 		}
 
