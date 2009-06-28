@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.Vibrator;
@@ -261,7 +262,8 @@ public class JustSit extends Activity {
         		if(silent){
         			mVibrator.vibrate(1000);
         		}else{
-        			mMediaPlayer = MediaPlayer.create(this, R.raw.prep);
+        		    setMediaVolume(true);
+        			mMediaPlayer = MediaPlayer.create(this, R.raw.bong);
         			mMediaPlayer.setVolume(1, 1);
         			mMediaPlayer.start();
         		}
@@ -276,8 +278,23 @@ public class JustSit extends Activity {
         			mVibrator.vibrate(1000);
         		}else{
         			mMediaPlayer = null;
-        			mMediaPlayer = MediaPlayer.create(this,R.raw.meditate);
+        			mMediaPlayer = MediaPlayer.create(this,R.raw.bong);
         			mMediaPlayer.setVolume(1, 1);
+        			mMediaPlayer.setOnCompletionListener(
+        					new OnCompletionListener(){
+        						//@Override
+        						private int plays = 0;
+        						public void onCompletion(MediaPlayer mMp){
+        							if(plays < 2){
+        								mMp.seekTo(0);
+        								mMp.start();
+        								plays++;
+        							}else{
+        								setMediaVolume(false);
+        							}
+        						}
+        		
+        					});
         			mMediaPlayer.start();
         		}
         		break;
@@ -289,6 +306,7 @@ public class JustSit extends Activity {
         		mMediaPlayer.stop();
         	}
         	meditationSettings(false);
+        	setMediaVolume(false);
         }
         
 	}
@@ -378,6 +396,5 @@ public class JustSit extends Activity {
 	    	setSilentMode(on);
 	    }
 	    
-	    setMediaVolume(on);
 	}
 }
