@@ -262,7 +262,7 @@ public class JustSit extends Activity {
         		if(silent){
         			mVibrator.vibrate(1000);
         		}else{
-        		    setMediaVolume(true);
+        		    //setMediaVolume(true);
         			mMediaPlayer = MediaPlayer.create(this, R.raw.bong);
         			mMediaPlayer.setVolume(1, 1);
         			mMediaPlayer.start();
@@ -290,7 +290,7 @@ public class JustSit extends Activity {
         								mMp.start();
         								plays++;
         							}else{
-        								setMediaVolume(false);
+        								//setMediaVolume(false);
         							}
         						}
         		
@@ -306,7 +306,7 @@ public class JustSit extends Activity {
         		mMediaPlayer.stop();
         	}
         	meditationSettings(false);
-        	setMediaVolume(false);
+        	//setMediaVolume(false);
         }
         
 	}
