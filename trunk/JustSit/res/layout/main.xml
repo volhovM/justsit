@@ -47,6 +47,10 @@
 <EditText android:id="@+id/preparation_text"
 	android:layout_width="100px"
 	android:layout_height="wrap_content"
+	android:inputType="number"
+	android:singleLine="true"
+	android:selectAllOnFocus="true"
+	android:gravity="right"
 	android:text="@string/default_prep_time"
 	/>
 <ImageView android:id="@+id/prep_down_button"
@@ -75,6 +79,10 @@
 <EditText android:id="@+id/meditation_text"
 	android:layout_width="100px"
 	android:layout_height="wrap_content"
+	android:inputType="numberSigned"
+	android:singleLine="true"
+	android:selectAllOnFocus="true"
+	android:gravity="right"
 	android:text="@string/default_meditation_time"
 	/>
 <ImageView android:id="@+id/meditate_down_button"
