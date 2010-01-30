@@ -72,6 +72,7 @@ public class JustSit extends Activity {
 	private Boolean mAirplaneMode;
 	private Boolean mSilentMode;
 	private PowerManager.WakeLock mWakeLock;
+	private PowerManager.WakeLock mPartialWakeLock;
 	private AudioManager mAudioManager;
 	private Vibrator mVibrator;
 	
@@ -96,9 +97,7 @@ public class JustSit extends Activity {
        	setPrepTime(settings.getLong(PREP_SECONDS, 30));
        	setMeditateTime(settings.getLong(MEDITATION_MINUTES, 30));
 
-        mAirplaneMode = settings.getBoolean(AIRPLANE_MODE, false);
-        mScreenOn = settings.getBoolean(SCREEN_ON, false);
-        mSilentMode = settings.getBoolean(SILENT_MODE, false);
+       	updateMeditationSettings();
         
         mPrepUp = (ImageView) findViewById(R.id.prep_up_button);
         mPrepDown = (ImageView) findViewById(R.id.prep_down_button);
@@ -250,6 +249,8 @@ public class JustSit extends Activity {
 
 	}
 	
+		
+	
 	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
@@ -370,6 +371,21 @@ public class JustSit extends Activity {
 
 	}
 	
+	protected void setPartialWakeLock(boolean on){
+		if(mPartialWakeLock == null){
+			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+			mPartialWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, TAG);
+		}
+		if(on){
+			mPartialWakeLock.acquire();
+		}else{
+			if(mPartialWakeLock.isHeld()){
+				mPartialWakeLock.release();
+			}
+			mPartialWakeLock = null;
+		}
+	}
+	
 	protected void setMediaVolume(boolean on){
 		SharedPreferences settings = getSharedPreferences(JustSit.PREFS_NAME, 0);
 	    SharedPreferences.Editor editor = settings.edit();
@@ -383,13 +399,24 @@ public class JustSit extends Activity {
 	    }
 		
 	}
+	
+	protected void updateMeditationSettings(){
+		SharedPreferences settings = getSharedPreferences(JustSit.PREFS_NAME, 0);
+        mAirplaneMode = settings.getBoolean(AIRPLANE_MODE, false);
+        mScreenOn = settings.getBoolean(SCREEN_ON, false);
+        mSilentMode = settings.getBoolean(SILENT_MODE, false);
+	}
+	
 	protected void meditationSettings(boolean on){
+		updateMeditationSettings();
 	    if(mAirplaneMode){
 	    	setAirplaneMode(on);
 	    }
 	    
 	    if(mScreenOn){
 	    	setScreenLock(on);
+	    }else{
+	    	setPartialWakeLock(on);
 	    }
 	    
 	    if(mSilentMode){
