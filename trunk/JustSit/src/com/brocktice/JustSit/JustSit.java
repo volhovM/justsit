@@ -34,6 +34,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
@@ -48,6 +49,7 @@ public class JustSit extends Activity {
     public static final String MEDITATION_MINUTES = "meditationMinutes";
     public static final String AIRPLANE_MODE = "airplaneMode";
     public static final String SCREEN_ON = "screenOn";
+    public static final String MAXIMIZE_VOLUME = "maximizeVolume";
 	public static final String ORIG_AIRPLANE_MODE = "originalAirplaneMode";
 	public static final String SILENT_MODE = "silentMode";
 	public static final String ORIG_RINGER_MODE= "originalRingerMode";
@@ -60,7 +62,8 @@ public class JustSit extends Activity {
     private static final int ACTIVITY_MEDITATE=1;
     public static final int TIMER_COMPLETE = RESULT_FIRST_USER;
     private static final String TAG = "JustSit";
-
+    public static final Boolean DEBUGLOGGING=false;
+    
     private EditText mPrepText;
     private EditText mMeditateText;
     private ImageView mPrepUp;
@@ -71,6 +74,7 @@ public class JustSit extends Activity {
 	private Boolean mScreenOn;
 	private Boolean mAirplaneMode;
 	private Boolean mSilentMode;
+	private Boolean mMaximizeVolume;
 	private PowerManager.WakeLock mWakeLock;
 	private PowerManager.WakeLock mPartialWakeLock;
 	private AudioManager mAudioManager;
@@ -249,8 +253,6 @@ public class JustSit extends Activity {
 
 	}
 	
-		
-	
 	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
@@ -405,6 +407,7 @@ public class JustSit extends Activity {
         mAirplaneMode = settings.getBoolean(AIRPLANE_MODE, false);
         mScreenOn = settings.getBoolean(SCREEN_ON, false);
         mSilentMode = settings.getBoolean(SILENT_MODE, false);
+        mMaximizeVolume = settings.getBoolean(MAXIMIZE_VOLUME, false);
 	}
 	
 	protected void meditationSettings(boolean on){
@@ -413,15 +416,27 @@ public class JustSit extends Activity {
 	    	setAirplaneMode(on);
 	    }
 	    
-	    if(mScreenOn){
-	    	setScreenLock(on);
-	    }else{
-	    	setPartialWakeLock(on);
-	    }
+	    //if(mScreenOn){
+	    	//setScreenLock(on);
+	    //}else{
+	    //}
+	    //setPartialWakeLock(on);
+	    //}
 	    
 	    if(mSilentMode){
 	    	setSilentMode(on);
 	    }
-	    
+	 
+	    if(mMaximizeVolume){
+	    	setMediaVolume(on);
+	    }
+	}
+	
+	public void lockScreenOn(){
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        mScreenOn = settings.getBoolean(JustSit.SCREEN_ON, false);
+		if(mScreenOn){
+				getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		}
 	}
 }

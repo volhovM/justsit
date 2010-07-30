@@ -18,8 +18,11 @@
 package com.brocktice.JustSit;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 public class RunTimer extends Activity {
@@ -27,14 +30,15 @@ public class RunTimer extends Activity {
 	private TextView mTimerLabel;
 	private long mMillisLeft;
 	private Bundle extras;
-	
-	public static final String PREFS_NAME = "JustSitPreferences";
+    private boolean mScreenOn;
 
+	public static final String PREFS_NAME = "JustSitPreferences";
+    private static final String TAG = "JustSit";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-
 		super.onCreate(savedInstanceState);
+
 		setContentView(R.layout.run_timer);
 		mTimerView = (TextView) findViewById(R.id.timer_view);
 		mTimerLabel = (TextView) findViewById(R.id.timer_label);
@@ -60,12 +64,16 @@ public class RunTimer extends Activity {
 
 	
 	protected void runCountdown(long start_time){
+		lockScreenOn();
 		new CountDownTimer(start_time, 1000) {
-
+			
             @Override
 			public void onTick(long millisUntilFinished) {
                                   mTimerView.setText(Long.toString(millisUntilFinished / 1000));
                                   mMillisLeft = millisUntilFinished;
+                                  if(JustSit.DEBUGLOGGING){
+                                	  Log.w(TAG, "Tick with "+mMillisLeft/1000+"s remaining");
+                                  }
             }
 
             @Override
@@ -80,6 +88,13 @@ public class RunTimer extends Activity {
 		return (hours*3600 + minutes*60) * 1000;
 	}
 	
+	public void lockScreenOn(){
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        mScreenOn = settings.getBoolean(JustSit.SCREEN_ON, false);
+		if(mScreenOn){
+				getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		}
+	}
 	
 }
 
