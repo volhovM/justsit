@@ -252,7 +252,6 @@ public class JustSit extends Activity {
         editor.putLong(PREP_SECONDS, getPrepTime());
         editor.putLong(MEDITATION_MINUTES, getMeditateTime());
         editor.commit();
-
     }
 
     @Override
