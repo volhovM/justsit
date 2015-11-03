@@ -23,39 +23,39 @@ import android.os.Bundle;
 import android.widget.CheckBox;
 
 public class JsSettings extends Activity {
-	private CheckBox mAirplaneMode;
-	private CheckBox mScreenOn;
-	private CheckBox mSilentMode;
-	private CheckBox mMaximizeVolume;
-	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.settings);
-		mAirplaneMode = (CheckBox) findViewById(R.id.airplane_mode_checkbox);
-		mScreenOn = (CheckBox) findViewById(R.id.screen_on_checkbox);
-		mSilentMode = (CheckBox) findViewById(R.id.silent_mode_checkbox);
-		mMaximizeVolume = (CheckBox) findViewById(R.id.maximize_volume_checkbox);
-		
-		SharedPreferences settings = getSharedPreferences(JustSit.PREFS_NAME, MODE_PRIVATE);
+    private CheckBox mAirplaneMode;
+    private CheckBox mScreenOn;
+    private CheckBox mSilentMode;
+    private CheckBox mMaximizeVolume;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.settings);
+        mAirplaneMode = (CheckBox) findViewById(R.id.airplane_mode_checkbox);
+        mScreenOn = (CheckBox) findViewById(R.id.screen_on_checkbox);
+        mSilentMode = (CheckBox) findViewById(R.id.silent_mode_checkbox);
+        mMaximizeVolume = (CheckBox) findViewById(R.id.maximize_volume_checkbox);
+
+        SharedPreferences settings = getSharedPreferences(JustSit.PREFS_NAME, MODE_PRIVATE);
 
         mAirplaneMode.setChecked(settings.getBoolean(JustSit.AIRPLANE_MODE, false));
         mScreenOn.setChecked(settings.getBoolean(JustSit.SCREEN_ON, false));
         mSilentMode.setChecked(settings.getBoolean(JustSit.SILENT_MODE, false));
         mMaximizeVolume.setChecked(settings.getBoolean(JustSit.MAXIMIZE_VOLUME, false));
-        
-	}
 
-	@Override
-	protected void onPause() {
-		super.onPause();
-		SharedPreferences settings = getSharedPreferences(JustSit.PREFS_NAME, 0);
-	    SharedPreferences.Editor editor = settings.edit();
-	    editor.putBoolean(JustSit.AIRPLANE_MODE, mAirplaneMode.isChecked());
-	    editor.putBoolean(JustSit.SCREEN_ON, mScreenOn.isChecked());
-	    editor.putBoolean(JustSit.SILENT_MODE, mSilentMode.isChecked());
-	    editor.putBoolean(JustSit.MAXIMIZE_VOLUME, mMaximizeVolume.isChecked());
-	    editor.commit();
-	}
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SharedPreferences settings = getSharedPreferences(JustSit.PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean(JustSit.AIRPLANE_MODE, mAirplaneMode.isChecked());
+        editor.putBoolean(JustSit.SCREEN_ON, mScreenOn.isChecked());
+        editor.putBoolean(JustSit.SILENT_MODE, mSilentMode.isChecked());
+        editor.putBoolean(JustSit.MAXIMIZE_VOLUME, mMaximizeVolume.isChecked());
+        editor.commit();
+    }
 
 }

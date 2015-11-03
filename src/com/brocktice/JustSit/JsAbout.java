@@ -26,23 +26,23 @@ import android.widget.TextView;
 
 public class JsAbout extends Activity {
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.about);
-		
-		PackageManager pm = getPackageManager();
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.about);
+
+        PackageManager pm = getPackageManager();
         try {
             //---get the package info---
-            PackageInfo pi =  
-                pm.getPackageInfo("com.brocktice.JustSit", 0);
+            PackageInfo pi =
+                    pm.getPackageInfo("com.brocktice.JustSit", 0);
             //---display the version name---
-            TextView tv = (TextView) findViewById(R.id.about_version);            
+            TextView tv = (TextView) findViewById(R.id.about_version);
             tv.setText("Version: " + pi.versionName);
         } catch (NameNotFoundException e) {
             e.printStackTrace();
         }
 
-	}
+    }
 
 }

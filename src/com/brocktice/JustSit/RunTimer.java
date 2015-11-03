@@ -26,76 +26,76 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 public class RunTimer extends Activity {
-	private TextView mTimerView;
-	private TextView mTimerLabel;
-	private long mMillisLeft;
-	private Bundle extras;
+    private TextView mTimerView;
+    private TextView mTimerLabel;
+    private long mMillisLeft;
+    private Bundle extras;
     private boolean mScreenOn;
 
-	public static final String PREFS_NAME = "JustSitPreferences";
+    public static final String PREFS_NAME = "JustSitPreferences";
     private static final String TAG = "JustSit";
-	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.run_timer);
-		mTimerView = (TextView) findViewById(R.id.timer_view);
-		mTimerLabel = (TextView) findViewById(R.id.timer_label);
-		
-		extras = (Bundle) getLastNonConfigurationInstance();
-		if (extras == null) {
-			extras = getIntent().getExtras();
-		}
-		if (extras != null) {
-			int timer_label = extras.getInt(JustSit.TIMER_LABEL);
-			long timer_duration = extras.getLong(JustSit.TIMER_DURATION);
-			mTimerLabel.setText(timer_label);
-			runCountdown(timer_duration);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-		}
-	}
+        setContentView(R.layout.run_timer);
+        mTimerView = (TextView) findViewById(R.id.timer_view);
+        mTimerLabel = (TextView) findViewById(R.id.timer_label);
 
-	@Override
-	public Object onRetainNonConfigurationInstance() {
-		extras.putLong(JustSit.TIMER_DURATION, mMillisLeft);
-	    return extras;
-	}
+        extras = (Bundle) getLastNonConfigurationInstance();
+        if (extras == null) {
+            extras = getIntent().getExtras();
+        }
+        if (extras != null) {
+            int timer_label = extras.getInt(JustSit.TIMER_LABEL);
+            long timer_duration = extras.getLong(JustSit.TIMER_DURATION);
+            mTimerLabel.setText(timer_label);
+            runCountdown(timer_duration);
 
-	
-	protected void runCountdown(long start_time){
-		lockScreenOn();
-		new CountDownTimer(start_time, 1000) {
-			
+        }
+    }
+
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        extras.putLong(JustSit.TIMER_DURATION, mMillisLeft);
+        return extras;
+    }
+
+
+    protected void runCountdown(long start_time) {
+        lockScreenOn();
+        new CountDownTimer(start_time, 1000) {
+
             @Override
-			public void onTick(long millisUntilFinished) {
-                                  mTimerView.setText(Long.toString(millisUntilFinished / 1000));
-                                  mMillisLeft = millisUntilFinished;
-                                  if(JustSit.DEBUGLOGGING){
-                                	  Log.w(TAG, "Tick with "+mMillisLeft/1000+"s remaining");
-                                  }
+            public void onTick(long millisUntilFinished) {
+                mTimerView.setText(Long.toString(millisUntilFinished / 1000));
+                mMillisLeft = millisUntilFinished;
+                if (JustSit.DEBUGLOGGING) {
+                    Log.w(TAG, "Tick with " + mMillisLeft / 1000 + "s remaining");
+                }
             }
 
             @Override
-			public void onFinish() {
-            	setResult(JustSit.TIMER_COMPLETE);
-            	finish();
+            public void onFinish() {
+                setResult(JustSit.TIMER_COMPLETE);
+                finish();
             }
-         }.start();
-	}
-	
-	protected int calculateCountdownTime(int hours, int minutes){
-		return (hours*3600 + minutes*60) * 1000;
-	}
-	
-	public void lockScreenOn(){
+        }.start();
+    }
+
+    protected int calculateCountdownTime(int hours, int minutes) {
+        return (hours * 3600 + minutes * 60) * 1000;
+    }
+
+    public void lockScreenOn() {
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         mScreenOn = settings.getBoolean(JustSit.SCREEN_ON, false);
-		if(mScreenOn){
-				getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		}
-	}
-	
+        if (mScreenOn) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+    }
+
 }
 
 
